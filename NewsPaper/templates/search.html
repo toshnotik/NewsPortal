@@ -1,0 +1,29 @@
+{% extends 'default.html' %}
+
+{% load my_filters %}
+
+{% block title %}
+Поиск
+{% endblock title %}
+
+{% block content %}
+
+    <form method="GET">
+    <hr>
+    {{ filter.form.as_p }}
+    <input type="submit" value="Найти">
+    <hr>
+    </form>
+    {% for post in filter.qs %}
+
+        <h1>{{ post.title|Censor }}</h1>
+        {% for cat in post.post_category.all %}
+            <h6>{{  cat.category_name }}</h6>
+        {% endfor %}
+        <h6>{{ post.text_article|Censor }}</h6>
+
+        <h6>{{ post.date_create_post| date:'d M Y' }} , {{ post.date_create_post| time }}</h6>
+        <hr>
+    {% endfor %}
+
+{% endblock content %}
