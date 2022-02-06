@@ -1,0 +1,32 @@
+{% extends 'default.html' %}
+
+
+{% block title %}
+Удаление: {{ post.title }}
+{% endblock title %}
+
+{% block content %}
+
+<h1>Удаление: {{ post.title }}</h1>
+
+<h2>Вы действительно хотите удалить данную новость?</h2>
+<table>
+    <tr>
+        <td>
+            {{ post.title }}
+        </td>
+        <td>
+            {{ post.author|title }}
+        </td>
+        <td>
+            {{ post.dateCreation }}
+        </td>
+    </tr>
+</table>
+
+<form method="POST">
+    {% csrf_token %}
+    <input type="submit" value="подтвердить">
+</form>
+
+{% endblock content %}

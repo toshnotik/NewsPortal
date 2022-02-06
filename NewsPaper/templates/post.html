@@ -11,6 +11,6 @@
         <p><b>Автор:</b> {{ post.author.authorUser }}</p>
         <p><b>Дата публикации:</b> {{ post.dateCreation|date:'d M Y, H:i'}}</p>
         <p>{{ post.text|Censor }}</p>
-        <p>{{ post.rating }}</p>
+        <p>Рейтинг: {{ post.rating }}</p>
 
 {% endblock content %}

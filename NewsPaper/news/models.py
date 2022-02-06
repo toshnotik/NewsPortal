@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models import Sum
-from django.core.validators import MinValueValidator
+from django.db.models import Sum, OneToOneField
 
 
 class Author(models.Model):
@@ -28,6 +27,7 @@ class Category(models.Model):
 
 class Post (models.Model):
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
+    user = models, OneToOneField(User, on_delete=models.CASCADE)
 
     NEWS = 'NW'
     ARTICLE = 'AR'
@@ -52,6 +52,9 @@ class Post (models.Model):
 
     def preview(self):
         return self.text[0:124] + '...'
+
+    def get_absolute_url(self):
+        return f'/news/{self.id}'
 
 
 class PostCategory(models.Model):

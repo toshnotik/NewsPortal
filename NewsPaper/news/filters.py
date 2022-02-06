@@ -8,11 +8,11 @@ class PostFilter(FilterSet):
         field_name='dateCreation',
         widget=DateInput(attrs={'type': 'date'}),
         lookup_expr='gt',
-        label='Даты позже'
+        label='Позже:'
     )
 
     title = CharFilter(
-        'title',
+        field_name='title',
         label='Заголовок содержит:',
         lookup_expr='icontains',
     )

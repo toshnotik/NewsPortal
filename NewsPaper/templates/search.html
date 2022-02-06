@@ -7,23 +7,43 @@
 {% endblock title %}
 
 {% block content %}
-
+    <hr>
     <form method="GET">
-    <hr>
-    {{ filter.form.as_p }}
+    {{ filter.form }}
     <input type="submit" value="Найти">
-    <hr>
     </form>
-    {% for post in filter.qs %}
+    <hr>
 
-        <h1>{{ post.title|Censor }}</h1>
-        {% for cat in post.post_category.all %}
-            <h6>{{  cat.category_name }}</h6>
-        {% endfor %}
-        <h6>{{ post.text_article|Censor }}</h6>
+    {% for post in search %}
 
-        <h6>{{ post.date_create_post| date:'d M Y' }} , {{ post.date_create_post| time }}</h6>
+        <h1><a href="{% url 'post' post.id %}">{{ post.title }}</a></h1>
+
+            <h4>{{  post.author.authorUser }}</h4>
+
+
+        <h5>{{ post.dateCreation| date:'d M Y' }} , {{ post.dateCreation| time }}</h5>
         <hr>
-    {% endfor %}
+        {% empty %}
+            <h1>Ничего не найдено</h1>
 
+    {% endfor %}
+    {% if is_paginated %}
+            {% if page_obj.has_previous %}
+            <a href="?page=1">Первая</a>
+            <a href="?page={{ page_obj.previous_page_number }}"><<<</a>
+            {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+            <a>{{ num }}</a>
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <a href="?page={{ num }}">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">>>></a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">Последняя</a>
+        {% endif %}
+    {% endif %}
 {% endblock content %}

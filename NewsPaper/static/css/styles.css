@@ -326,6 +326,7 @@ td,
 th {
   border-color: inherit;
   border-style: solid;
+  padding: 5px;
 }
 
 label {
