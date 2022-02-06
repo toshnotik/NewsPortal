@@ -27,7 +27,6 @@ class Category(models.Model):
 
 class Post (models.Model):
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
-    user = models, OneToOneField(User, on_delete=models.CASCADE)
 
     NEWS = 'NW'
     ARTICLE = 'AR'
