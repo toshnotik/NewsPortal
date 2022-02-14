@@ -1,7 +1,9 @@
 from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Post
 from .filters import PostFilter
 from .forms import PostForm
+
 
 class PostList(ListView):
     model = Post
@@ -37,9 +39,10 @@ class PostSearch(ListView):
         }
 
 
-class PostEdit(UpdateView):
+class PostEdit(LoginRequiredMixin, UpdateView):
     template_name = 'edit.html'
     form_class = PostForm
+
 
     def get_object(self, **kwargs):
         id = self.kwargs.get('pk')
