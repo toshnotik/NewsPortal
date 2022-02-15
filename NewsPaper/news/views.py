@@ -12,6 +12,11 @@ class PostList(ListView):
     queryset = Post.objects.order_by('-dateCreation')
     paginate_by = 10
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_authors'] = self.request.user.groups.filter(name='authors').exists()
+        return context
+
 
 class PostDetail(DetailView):
     model = Post
@@ -39,7 +44,7 @@ class PostSearch(ListView):
         }
 
 
-class PostEdit(LoginRequiredMixin, UpdateView):
+class PostEdit(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
     template_name = 'edit.html'
     form_class = PostForm
     permission_required = ('news.change_post',)
@@ -50,13 +55,13 @@ class PostEdit(LoginRequiredMixin, UpdateView):
         return Post.objects.get(pk=id)
 
 
-class PostAdd(CreateView):
+class PostAdd(PermissionRequiredMixin, CreateView):
     template_name = 'add.html'
     form_class = PostForm
     permission_required = ('news.add_post',)
 
 
-class PostDelete(DeleteView):
+class PostDelete(PermissionRequiredMixin, DeleteView):
     template_name = 'delete.html'
     queryset = Post.objects.all()
     success_url = '/news/'

@@ -16,9 +16,11 @@
             <tr>
                 <td>
                     <h3><a href="{% url 'post' post.id %}">{{ post.title|Censor }}</a></h3>
+                    {% if is_authors %}
                     <hr>
                 <a href="{% url 'edit' post.id %}">Редактировать</a> |
                 <a href="{% url 'delete' post.id %}">Удалить</a>
+                    {% endif %}
                 </td>
                 <td>
                     {{ post.dateCreation|date:'d M Y' }}
@@ -29,7 +31,10 @@
             </tr>
         {% endfor %}
         </table>
-<a href="{% url 'add' %}">Добавить новость</a> <br>
+{% if is_authors %}
+<a href="{% url 'add' %}">Добавить новость</a>
+{% endif %}
+<br>
         {% if is_paginated %}
             {% if page_obj.has_previous %}
             <a href="?page=1">Первая</a>
