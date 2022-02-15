@@ -1,5 +1,5 @@
 from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from .models import Post
 from .filters import PostFilter
 from .forms import PostForm
@@ -42,6 +42,7 @@ class PostSearch(ListView):
 class PostEdit(LoginRequiredMixin, UpdateView):
     template_name = 'edit.html'
     form_class = PostForm
+    permission_required = ('news.change_post',)
 
 
     def get_object(self, **kwargs):
@@ -52,9 +53,11 @@ class PostEdit(LoginRequiredMixin, UpdateView):
 class PostAdd(CreateView):
     template_name = 'add.html'
     form_class = PostForm
+    permission_required = ('news.add_post',)
 
 
 class PostDelete(DeleteView):
     template_name = 'delete.html'
     queryset = Post.objects.all()
     success_url = '/news/'
+    permission_required = ('news.delete_post',)
