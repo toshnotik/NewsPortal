@@ -1,6 +1,6 @@
 from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from .models import Post
+from .models import Post, Category, Author
 from .filters import PostFilter
 from .forms import PostForm
 
@@ -15,6 +15,20 @@ class PostList(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['is_authors'] = self.request.user.groups.filter(name='authors').exists()
+        context['categories'] = Category.objects.all()
+        context['authors'] = Author.objects.all()
+
+        return context
+
+
+class CategoriesList(ListView):
+    model = Category
+    template_name = 'category.html'
+    context_object_name = 'postcategories'
+    paginate_by = 10
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         return context
 
 
@@ -22,6 +36,10 @@ class PostDetail(DetailView):
     model = Post
     template_name = 'post.html'
     context_object_name = 'post'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
 
 
 class PostSearch(ListView):
@@ -48,7 +66,6 @@ class PostEdit(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
     template_name = 'edit.html'
     form_class = PostForm
     permission_required = ('news.change_post',)
-
 
     def get_object(self, **kwargs):
         id = self.kwargs.get('pk')

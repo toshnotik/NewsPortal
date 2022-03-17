@@ -1,5 +1,5 @@
-from django_filters import FilterSet, DateFilter, CharFilter, ModelChoiceFilter
-from .models import Post, Author
+from django_filters import FilterSet, DateFilter, CharFilter, ModelChoiceFilter, ModelMultipleChoiceFilter
+from .models import Post, Author, Category, PostCategory
 from django.forms import DateInput
 
 
@@ -22,6 +22,13 @@ class PostFilter(FilterSet):
         label='Автор:',
         lookup_expr='exact',
         queryset=Author.objects.all()
+    )
+
+    PostCategory = ModelChoiceFilter(
+        field_name='PostCategory',
+        label='Категория:',
+        lookup_expr='exact',
+        queryset=Category.objects.all()
     )
 
     class Meta:

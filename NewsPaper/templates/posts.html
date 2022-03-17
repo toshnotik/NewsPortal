@@ -16,6 +16,8 @@
             <tr>
                 <td>
                     <h3><a href="{% url 'post' post.id %}">{{ post.title|Censor }}</a></h3>
+                    <hr>
+                    {{ post.postCategory }}
                     {% if is_authors %}
                     <hr>
                 <a href="{% url 'edit' post.id %}">Редактировать</a> |
