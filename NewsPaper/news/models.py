@@ -25,7 +25,7 @@ class Author(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=64, unique=True)
-    subscribers = models.ManyToManyField(User, default=None)
+    subscribers = models.ManyToManyField(User)
 
     def __str__(self):
         return f'{self.name}'
@@ -70,7 +70,7 @@ class PostCategory(models.Model):
     categoryThrough = models.ForeignKey(Category, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.categoryThrough} - {self.postThrough}'
+        return f'{self.categoryThrough}'
 
 
 class Comment(models.Model):

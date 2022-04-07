@@ -9,7 +9,12 @@
 {% block content %}
         <h1>Все новости</h1>
         <h4>Колличество новостей: {{ posts|length }}</h4>
-        <a href="/news/search/">Поиск по новостям</a>
+        <h4><b><a href="/news/category/">Рубрики</a></b></h4>
+        {{ post.postCategory.all }}
+        <a href="/news/search/">Поиск по новостям</a></br>
+{% if is_authors %}
+<a href="{% url 'add' %}">Добавить новость</a>
+{% endif %}
     {% if posts %}
         <table>
         {% for post in posts %}
@@ -17,7 +22,9 @@
                 <td>
                     <h3><a href="{% url 'post' post.id %}">{{ post.title|Censor }}</a></h3>
                     <hr>
-                    {{ post.postCategory }}
+                    {% for cat in post.postCategory.all %}
+                    <p>{{ cat }}</p>
+                    {% endfor %}
                     {% if is_authors %}
                     <hr>
                 <a href="{% url 'edit' post.id %}">Редактировать</a> |
@@ -33,9 +40,6 @@
             </tr>
         {% endfor %}
         </table>
-{% if is_authors %}
-<a href="{% url 'add' %}">Добавить новость</a>
-{% endif %}
 <br>
         {% if is_paginated %}
             {% if page_obj.has_previous %}

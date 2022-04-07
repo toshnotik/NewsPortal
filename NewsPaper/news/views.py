@@ -1,8 +1,10 @@
 from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from .models import Post, Category, Author
+from django.contrib.auth.decorators import login_required
+from .models import Post, Category, Author, User
 from .filters import PostFilter
 from .forms import PostForm
+from django.shortcuts import redirect
 
 
 class PostList(ListView):
@@ -25,6 +27,17 @@ class CategoriesList(ListView):
     model = Category
     template_name = 'category.html'
     context_object_name = 'postcategories'
+    paginate_by = 10
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+
+class CategoryDetail(DetailView):
+    model = Category
+    template_name = 'rubrika.html'
+    context_object_name = 'rubrika'
     paginate_by = 10
 
     def get_context_data(self, **kwargs):
@@ -83,3 +96,17 @@ class PostDelete(PermissionRequiredMixin, DeleteView):
     queryset = Post.objects.all()
     success_url = '/news/'
     permission_required = ('news.delete_post',)
+
+
+@login_required
+def add_subscriber(request, category_id):
+    user = request.user
+    my_category = Category.objects.get(id=category_id)
+    sub_user = User.objects.get(id=user.pk)
+    if my_category.subscribers.filter(id=user.pk):
+        my_category.subscribers.remove(sub_user)
+        return redirect('/news/')
+    else:
+        my_category.subscribers.add(sub_user)
+        return redirect('/news/')
+

@@ -2,6 +2,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User, Group
 from allauth.account.forms import SignupForm
 from django import forms
+from news.models import Author
 
 
 class BasicSignupForm(SignupForm):
@@ -9,6 +10,7 @@ class BasicSignupForm(SignupForm):
         user = super(BasicSignupForm, self).save(request)
         common_group = Group.objects.get(name='common')
         common_group.user_set.add(user)
+
         return user
 
 

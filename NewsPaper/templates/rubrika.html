@@ -3,11 +3,11 @@
 {% load my_filters %}
 
 {% block title %}
-    {{ post.title }}
+    {{ category.name }}
 {% endblock title %}
 
 {% block content %}
-    <h1>{{ post.title|Censor }}</h1>
+    <h1>{{ Category.name }}</h1>
         <p><b>Автор:</b> {{ post.author.authorUser }} <b>Рейтинг автора:</b> {{ post.author.ratingAuthor }}</p>
         <p><b>Дата публикации:</b> {{ post.dateCreation|date:'d M Y, H:i'}},
         {% for cat in post.postCategory.all %}

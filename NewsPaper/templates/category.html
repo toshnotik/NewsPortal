@@ -10,7 +10,8 @@
 
         <h3>Колличество категорий: {{ postcategories|length }}</h3>
         {% for category in postcategories.all%}
-            <h4>{{ category }}</h4>
+            <h4>{{ category.name }} -
+            <button><a href="{% url 'add_sub' category.id %}">Подписаться</a></button></h4>
     {% endfor %}
 <br>
         {% if is_paginated %}

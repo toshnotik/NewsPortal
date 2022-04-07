@@ -25,7 +25,7 @@ class PostFilter(FilterSet):
     )
 
     PostCategory = ModelChoiceFilter(
-        field_name='PostCategory',
+        field_name='postCategory',
         label='Категория:',
         lookup_expr='exact',
         queryset=Category.objects.all()
