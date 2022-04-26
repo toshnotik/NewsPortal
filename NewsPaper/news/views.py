@@ -94,6 +94,16 @@ class PostDelete(PermissionRequiredMixin, DeleteView):
 def add_subscriber(request, pk):
     Category.objects.get(pk=pk)
     Category.objects.get(pk=pk).subscribers.add(request.user)
+    user = request.user
+    id_u = user.id
+    category = Category.objects.get(id=pk)
+    email = category.subscribers.get(id=id_u).email
+    send_mail(
+        subject=f'News Portal: подписка на обновления категории {category}',
+        message=f'«{request.user}», вы подписались на обновление категории: «{category}».',
+        from_email='skillfactor@yandex.ru',
+        recipient_list=[f'{email}', ],
+        )
     return redirect('/news/category/')
 
 
@@ -102,40 +112,3 @@ def del_subscriber(request, pk):
     Category.objects.get(pk=pk)
     Category.objects.get(pk=pk).subscribers.remove(request.user)
     return redirect('/news/category/')
-
-
-# @login_required
-# def add_subscriber(request, pk):
-#
-#     user = request.user
-#     id_u = user.id
-#     category = Category.objects.get(id=pk)
-#     print(f'''PK =  "{pk}", USER:  "{user}", user_id: "{id_u}", category: "{category}"''')
-#
-#     qs = category.subscribers.all()
-#     print('QS= ', qs)
-#     print('ПОДПИСАН НА КАТЕГОРИЮ ? ', qs.filter(username=user).exists())
-#     if not qs.filter(username=user).exists():
-#         category.subscribers.add(user)
-#         print('Пользователь', user, 'подписан на категорию:', category)
-#     else:
-#         category.subscribers.remove(user)
-#         print('Пользователь', user, 'отписался от категории:', category)
-#
-#     try:
-#         email = category.subscribers.get(id=id_u).email
-#         print(f'''email: "{email}" Можно отправить уведомление''')
-#         # send_mail(
-#         #     subject=f'News Portal: подписка на обновления категории {category}',
-#         #     message=f'«{request.user}», вы подписались на обновление категории: «{category}».',
-#         #     from_email='skillfactor@yandex.ru',
-#         #     recipient_list=[f'{email}', ],
-#         # )
-#
-#     except Exception as n:
-#         print('-----------------')
-#
-#     return redirect('/news/category/')
-
-
-
