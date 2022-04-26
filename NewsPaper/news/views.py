@@ -1,7 +1,8 @@
 from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.decorators import login_required
-from .models import Post, Category, Author, User
+from django.core.mail import send_mail
+from .models import Post, Category, Author, User, Comment
 from .filters import PostFilter
 from .forms import PostForm
 from django.shortcuts import redirect
@@ -19,7 +20,6 @@ class PostList(ListView):
         context['is_authors'] = self.request.user.groups.filter(name='authors').exists()
         context['categories'] = Category.objects.all()
         context['authors'] = Author.objects.all()
-
         return context
 
 
@@ -31,17 +31,9 @@ class CategoriesList(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        return context
-
-
-class CategoryDetail(DetailView):
-    model = Category
-    template_name = 'rubrika.html'
-    context_object_name = 'rubrika'
-    paginate_by = 10
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        sub_user = Category.objects.values('subscribers')
+        context['is_not_sub'] = not sub_user.filter(subscribers=self.request.user).exists()
+        context['is_sub'] = sub_user.filter(subscribers=self.request.user).exists()
         return context
 
 
@@ -99,14 +91,51 @@ class PostDelete(PermissionRequiredMixin, DeleteView):
 
 
 @login_required
-def add_subscriber(request, category_id):
-    user = request.user
-    my_category = Category.objects.get(id=category_id)
-    sub_user = User.objects.get(id=user.pk)
-    if my_category.subscribers.filter(id=user.pk):
-        my_category.subscribers.remove(sub_user)
-        return redirect('/news/')
-    else:
-        my_category.subscribers.add(sub_user)
-        return redirect('/news/')
+def add_subscriber(request, pk):
+    Category.objects.get(pk=pk)
+    Category.objects.get(pk=pk).subscribers.add(request.user)
+    return redirect('/news/category/')
+
+
+@login_required
+def del_subscriber(request, pk):
+    Category.objects.get(pk=pk)
+    Category.objects.get(pk=pk).subscribers.remove(request.user)
+    return redirect('/news/category/')
+
+
+# @login_required
+# def add_subscriber(request, pk):
+#
+#     user = request.user
+#     id_u = user.id
+#     category = Category.objects.get(id=pk)
+#     print(f'''PK =  "{pk}", USER:  "{user}", user_id: "{id_u}", category: "{category}"''')
+#
+#     qs = category.subscribers.all()
+#     print('QS= ', qs)
+#     print('ПОДПИСАН НА КАТЕГОРИЮ ? ', qs.filter(username=user).exists())
+#     if not qs.filter(username=user).exists():
+#         category.subscribers.add(user)
+#         print('Пользователь', user, 'подписан на категорию:', category)
+#     else:
+#         category.subscribers.remove(user)
+#         print('Пользователь', user, 'отписался от категории:', category)
+#
+#     try:
+#         email = category.subscribers.get(id=id_u).email
+#         print(f'''email: "{email}" Можно отправить уведомление''')
+#         # send_mail(
+#         #     subject=f'News Portal: подписка на обновления категории {category}',
+#         #     message=f'«{request.user}», вы подписались на обновление категории: «{category}».',
+#         #     from_email='skillfactor@yandex.ru',
+#         #     recipient_list=[f'{email}', ],
+#         # )
+#
+#     except Exception as n:
+#         print('-----------------')
+#
+#     return redirect('/news/category/')
+
+
 

@@ -11,7 +11,13 @@
         <h3>Колличество категорий: {{ postcategories|length }}</h3>
         {% for category in postcategories.all%}
             <h4>{{ category.name }} -
-            <button><a href="{% url 'add_sub' category.id %}">Подписаться</a></button></h4>
+                {% if is_not_sub %}
+                <button><a href="{% url 'add_sub' category.id %}">Подписаться</a></button>
+                {% endif %}
+                {% if is_sub %}
+            <button><a href="{% url 'del_sub' category.id %}">Отписаться</a></button>
+                {% endif %}
+            </h4>
     {% endfor %}
 <br>
         {% if is_paginated %}
