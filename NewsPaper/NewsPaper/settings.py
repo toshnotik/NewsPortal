@@ -162,3 +162,10 @@ DEFAULT_FROM_EMAIL = 'skillfactor@yandex.ru'  # здесь указываем у
 MANAGERS = [('Toshnotik', 'kirsan0ff@yandex.ru')]
 
 SERVER_EMAIL = 'skillfactor@yandex.ru' # здесь указываем уже свою ПОЛНУЮ почту, с которой будут отправляться письма
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': os.path.join(BASE_DIR, 'cache_files'), # Указываем, куда будем сохранять кэшируемые файлы! Не забываем создать папку cache_files внутри папки с manage.py!
+    }
+}
